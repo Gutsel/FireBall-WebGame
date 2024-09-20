@@ -1,0 +1,540 @@
+@font-face {
+  font-family: "gameboy";
+  src: url("Assets/fonts/Early\ GameBoy.ttf") format("truetype");
+}
+
+/* Globale Reset-Einstellungen */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Menü-Stile */
+.menu {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 2;
+}
+
+.menu button {
+  display: block;
+  margin: 10px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  font-family: "gameboy", sans-serif;
+}
+
+/* Button-Stile */
+button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #fb6161;
+  color: #282c34;
+  border: black;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: "gameboy", sans-serif;
+}
+
+button:hover {
+  background-color: #d6cf4f;
+  transform: scale(1.05);
+}
+
+button:focus {
+  outline: none;
+  box-shadow: 0 0 4px #f3fb61;
+}
+
+/* Start-Menü-Stile */
+#start-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  color: #fff;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  font-family: "gameboy", sans-serif;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+/* Steuerungsmenü-Stile */
+#controls-menu {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #282c34;
+  color: #f0f0f0;
+
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  font-family: "gameboy", sans-serif;
+  z-index: 1000;
+  overflow: auto;
+}
+
+#controls-menu h2 {
+  margin-top: 0;
+  font-size: 26px;
+  text-align: center;
+  color: #f95050;
+  border-bottom: 2px solid #fb6161;
+  padding-bottom: 10px;
+  font-family: "gameboy", sans-serif;
+}
+
+#controls-menu .section h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #f9ff53;
+  border-bottom: 1px solid #444;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  font-family: "gameboy", sans-serif;
+}
+
+#controls-menu ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#controls-menu ul li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+#highscoremenu {
+  background-color: #282c34;
+  color: #f0f0f0;
+
+  padding: 20px;
+  width: 320px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  font-family: "gameboy", sans-serif;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+#highscore-list {
+  max-height: 300px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+#highscore-list li {
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  font-size: 16px;
+  color: #e0e0e0;
+}
+
+#highscore-list li:first-child {
+  border-top: 1px solid #444;
+}
+
+#highscoremenu h2 {
+  margin-top: 0;
+  font-size: 26px;
+  text-align: center;
+  color: #fb6161;
+  border-bottom: 2px solid #fb6161;
+  padding-bottom: 10px;
+  font-family: "gameboy", sans-serif;
+}
+
+#highscoremenu .section h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #e8e8e8;
+  border-bottom: 1px solid #444;
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+  font-family: "gameboy", sans-serif;
+}
+
+/* Versteckte Elemente */
+.hidden {
+  display: none;
+}
+
+/* Hintergrund und Layout */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-image: url("Assets/background2.gif");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: #000000e9;
+  border: 5px solid #450000;
+  overflow: hidden;
+  filter: brightness(0.7);
+  font-family: "gameboy", sans-serif;
+}
+
+/* Spielbereich */
+.game-area {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  background-color: #000000e9;
+  border: 5px solid #ff4f4f;
+  border-radius: 0;
+  z-index: 1;
+  box-shadow: 0 0 0 3px #ff1500, 0 0 0 6px #000000e9;
+}
+
+/* Charakter-Stile */
+.character {
+  position: absolute;
+  width: 50px;
+  height: 100px;
+  bottom: 0;
+  background-size: contain;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+#character1.left {
+  background-image: url("Assets/Fighter1-left.gif");
+}
+
+#character1.right {
+  background-image: url("Assets/Fighter1.gif");
+}
+
+#character1.jumping {
+  background-image: url("Assets/Fighter1-jump.png");
+}
+
+#bot.left {
+  background-image: url("Assets/Fighter2-left.gif");
+}
+
+#bot.right {
+  background-image: url("Assets/Fighter2.gif");
+}
+
+/* Feuerball-Stile */
+.fireball-char1 {
+  width: 25px;
+  height: 25px;
+  background-image: url("Assets/fireball1.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball-char1-left {
+  width: 25px;
+  height: 25px;
+  background-image: url("Assets/fireball1-left.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball-bot {
+  width: 25px;
+  height: 25px;
+  background-image: url("Assets/fireball2.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball-bot-left {
+  width: 25px;
+  height: 25px;
+  background-image: url("Assets/fireball2-left.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+/* Explosionen */
+.explosionchar {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(255, 128, 0);
+  position: absolute;
+  border-radius: 50%;
+  animation: explode 0.5s ease-out;
+  z-index: 1;
+}
+
+.explosionbot {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(0, 255, 255);
+  position: absolute;
+  border-radius: 50%;
+  animation: explode 0.5s ease-out;
+  z-index: 1;
+}
+
+@keyframes explode {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.fireball2-char1 {
+  width: 80px;
+  height: 80px;
+  background-image: url("Assets/fireball1.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball2-char1-left {
+  width: 80px;
+  height: 80px;
+  background-image: url("Assets/fireball1-left.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball2-bot {
+  width: 80px;
+  height: 80px;
+  background-image: url("Assets/fireball2.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.fireball2-bot-left {
+  width: 80px;
+  height: 80px;
+  background-image: url("Assets/fireball2-left.gif");
+  background-size: cover;
+  position: absolute;
+  z-index: 10;
+}
+
+.explosion2char {
+  width: 100px;
+  height: 100px;
+  background-color: rgb(255, 128, 0);
+  position: absolute;
+  border-radius: 50%;
+  animation: explode2 0.5s ease-out;
+  z-index: 1;
+}
+
+.explosion2bot {
+  width: 100px;
+  height: 100px;
+  background-color: rgb(0, 255, 255);
+  position: absolute;
+  border-radius: 50%;
+  animation: explode2 0.5s ease-out;
+  z-index: 1;
+}
+
+@keyframes explode2 {
+  0% {
+    transform: scale(1);
+  }
+
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+/* Lebensbalken */
+.life-container {
+  position: absolute;
+  width: 120px;
+  height: 40px;
+  top: 10px;
+  z-index: 1;
+}
+
+.life-background {
+  width: 100%;
+  height: 20px;
+  background-color: rgb(255, 0, 0);
+  border: 2px solid #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.life-bar {
+  width: 100%;
+  height: 20px;
+  background-color: rgb(0, 172, 77);
+  border: 2px solid #000;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: width 0.3s ease-in-out;
+}
+
+.life-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: white;
+  z-index: 2;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+#life-container1 {
+  left: 10px;
+}
+
+#life-container2 {
+  right: 10px;
+}
+
+/* Game Over-Bildschirm */
+#game-over {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333;
+  color: #fff;
+  padding: 30px;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  font-family: "gameboy", sans-serif;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+#game-over p {
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+#restart-button,
+#main-menu-button {
+  color: #282c34;
+  border: none;
+  padding: 12px 25px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 10px 0;
+  font-family: "gameboy", sans-serif;
+}
+
+/* Schild-Stile */
+.shield {
+  display: none;
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.6;
+  z-index: 10;
+}
+
+.shield-character1 {
+  background: url("Assets/shield1.gif");
+}
+
+.shield-character2 {
+  background: url("Assets/shield2.gif");
+}
+
+/* Pause-Menü */
+#pause-menu {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+
+  font-family: "gameboy", sans-serif;
+}
+
+/* Countdown-Anzeige */
+#countdownDisplay {
+  font-size: 48px;
+  color: rgb(255, 0, 0);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+/* Kampf-Anzeige */
+@keyframes fadeInOut {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(5);
+    opacity: 0;
+  }
+}
+
+#fightDisplay {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  transform-origin: center;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  animation: fadeInOut 2s forwards;
+}
+
+#fightDisplay img {
+  width: 100%;
+  height: auto;
+}

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ball's of Fire</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="player-name-menu" class="menu">
+      <input
+        type="text"
+        id="fname"
+        name="fname"
+        placeholder="Gib dein Namen ein..."
+      />
+      <button id="start-button-name">Start Game</button>
+    </div>
+    <div id="highscoremenu" class="menu hidden">
+      <h2>Highscore</h2>
+      <ul id="highscore-list"></ul>
+      <button id="back-button2">Back</button>
+    </div>
+    <div id="start-menu" class="menu hidden">
+      <button id="start-button">New Match</button>
+      <button id="controls-button">Controls</button>
+      <button id="highscore-button">Highscore</button>
+    </div>
+    <div id="controls-menu" class="menu hidden">
+      <h2>Controls</h2>
+      <div class="section">
+        <h3>Movement:</h3>
+        <ul>
+          <li>A - Move Left</li>
+          <li>D - Move Right</li>
+          <li>W - Jump</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Actions:</h3>
+        <ul>
+          <li>Q - Fireball</li>
+          <li>R - Large Fireball</li>
+          <li>E - Block</li>
+        </ul>
+      </div>
+      <div class="section">
+        <h3>Menu:</h3>
+        <ul>
+          <li>ESC - Open Menu</li>
+        </ul>
+      </div>
+      <button id="back-button1">Back</button>
+    </div>    
+    <div class="game-area hidden">
+      <div id="character1" class="character"></div>
+      <div id="bot" class="character"></div>
+      <div id="shield1" class="shield shield-character1"></div>
+      <div id="shield2" class="shield shield-character2"></div>
+      <div class="life-container" id="life-container1">
+        <div id="life-background1" class="life-background"></div>
+        <div id="life1" class="life-bar"></div>
+        <div id="life-text1" class="life-text">5 / 5 HP</div>
+      </div>
+      <div class="life-container" id="life-container2">
+        <div id="life-background2" class="life-background"></div>
+        <div id="life2" class="life-bar"></div>
+        <div id="life-text2" class="life-text">5 / 5 HP</div>
+      </div>
+    </div>
+    <audio id="fireball-hit-sound" src="Assets/sounds/fireball-hit.mp3"></audio>
+    <div id="countdownDisplay" class="hidden"></div>
+    <div id="fightDisplay" class="hidden">
+      <img src="Assets/FightDisplay.png" alt="Fight Display" />
+    </div>
+    <audio
+      id="ambient-music"
+      src="Assets/sounds/ambient-music.mp3"
+      loop
+    ></audio>
+    <div id="pause-menu" class="menu hidden">
+      <h1>Paused</h1>
+      <button id="resume-button">Resume</button>
+      <button id="main-menu-button">Main Menu</button>
+    </div>
+    <div id="game-over" class="hidden">
+      <p id="game-over-text"></p>
+      <button id="restart-button">Restart</button>
+      <button id="restart-menu-main-menu-button">Main Menu</button>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
