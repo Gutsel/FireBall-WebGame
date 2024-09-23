@@ -39,10 +39,11 @@ let isCountdownActive = false;
 
 let countdownInterval;
 let countdownValue = 3;
-let fightDisplay = document.getElementById("fightDisplay");
 
 let playerName;
 let playerNamefield = [];
+
+let botMaxHealth = 5;
 
 let character1Pos = {
   left: 50,
@@ -56,15 +57,16 @@ let character1Pos = {
 };
 
 let botPos = {
-  left: 400,
+  left: 700,
   bottom: 0,
   isJumping: false,
   velocityY: 0,
-  health: 5,
+  health: botMaxHealth,
   jumpCount: 0,
   isBlocking: false,
   lastBlockTime: 0,
 };
+
 
 const gravity = 0.8;
 const moveSpeed = 10;
@@ -93,6 +95,7 @@ let shotsFiredBot = 0;
 
 const cooldownDuration = 2000;
 const maxShots = 3;
+let botMaxShots = 3;
 
 let shield1, shield2;
 
@@ -104,14 +107,33 @@ const bigFireballCooldown = 10000;
 
 let largeFireballs = [];
 
+let currentLevel = 1;
+let playerWinsAllLevels = false;
+
+var images = [
+  'Assets/backgrounds/background1.webp', 
+  'Assets/backgrounds/background2.webp', 
+  'Assets/backgrounds/background3.webp', 
+  'Assets/backgrounds/background4.webp', 
+  'Assets/backgrounds/background5.webp', 
+  'Assets/backgrounds/background6.webp', 
+  'Assets/backgrounds/background7.webp', 
+  'Assets/backgrounds/background8.webp', 
+  'Assets/backgrounds/background9.webp', 
+  'Assets/backgrounds/background10.webp' 
+];
+
 loadHighscores();
 
-function restartGame() {
+
+
+function startGame() {
   if (gameLoop) {
     clearInterval(gameLoop);
     gameLoop = null;
   }
 
+  botConfig(currentLevel);
   character1Pos = {
     left: 50,
     bottom: 0,
@@ -128,7 +150,7 @@ function restartGame() {
     bottom: 0,
     isJumping: false,
     velocityY: 0,
-    health: 5,
+    health: botMaxHealth,
     jumpCount: 0,
     isBlocking: false,
     lastBlockTime: 0,
@@ -154,13 +176,77 @@ function restartGame() {
   gameOverScreen.classList.add("hidden");
   pauseMenu.classList.add("hidden");
   countdownDisplay.classList.add("hidden");
-  fightDisplay.classList.add("hidden");
   playerNameMenu.classList.add("hidden");
   HighscoreScreen.classList.add("hidden");
   controlsMenu.classList.add("hidden");
   gameArea.classList.remove("hidden");
+  startLevel(currentLevel);
+}
 
+function startLevel(level) {
+  if (currentLevel > 10){
+    incrementWin(playerName);
+    currentLevel = 1;
+  }
+  if (currentLevel === 10){
+    document.getElementById("info").innerHTML = "WIN AGAINST THE BOSS";
+  }
+  else {
+    document.getElementById("info").innerHTML = "Reach Level 10";
+  }
+
+  document.getElementById("level").innerHTML = "Level " + currentLevel;
+  changeImage();
   startCountdown();
+}
+
+function botConfig(level){
+  switch (level){
+    case 1:
+    botMaxHealth = 5;
+    botMaxShots = 3;
+    break;
+    case 2:
+    botMaxHealth = 6;
+    botMaxShots = 3;
+    break;
+    case 3:
+    botMaxHealth = 8;
+    botMaxShots = 3;
+    break;
+    case 4:
+    botMaxHealth = 9;
+    botMaxShots = 3;
+    break;
+    case 5:
+    botMaxHealth = 10;
+    botMaxShots = 3;
+    break;
+    case 6:
+    botMaxHealth = 12;
+    botMaxShots = 4;
+    break;
+    case 7:
+    botMaxHealth = 13;
+    botMaxShots = 5;
+    break;
+    case 8:
+    botMaxHealth = 14;
+    botMaxShots = 5;
+    break;
+    case 9:
+    botMaxHealth = 15;
+    botMaxShots = 5;
+    break;
+    case 10:
+    botMaxHealth = 20;
+    botMaxShots = 8;
+    break;
+  }
+}
+
+function changeImage() {
+  document.body.style.backgroundImage = 'url(' + images[currentLevel - 1] + ')';
 }
 
 function startCountdown() {
@@ -185,25 +271,20 @@ function startCountdown() {
     countdownValue--;
     if (countdownValue <= 0) {
       clearInterval(countdownInterval);
-      countdownDisplay.classList.add("hidden");
+      countdownDisplay.textContent = "FIGHT"; 
       ambientMusic.play();
-      showFightMessage();
-      isCountdownActive = false;
+
+      setTimeout(function () {
+        countdownDisplay.classList.add("hidden");
+        if (!gameLoop) {
+          gameLoop = setInterval(update, 30);
+        }
+        isCountdownActive = false;
+      }, 1000); 
     } else {
       countdownDisplay.textContent = countdownValue;
     }
-  }, 1000);
-}
-
-function showFightMessage() {
-  fightDisplay.classList.remove("hidden");
-
-  setTimeout(function () {
-    fightDisplay.classList.add("hidden");
-
-    if (!gameLoop) {
-      gameLoop = setInterval(update, 30);
-    }
+    
   }, 1000);
 }
 
@@ -308,14 +389,16 @@ function handleKeyUp(e) {
 
 function shootFireball(characterPos, targetPos, characterType) {
   const currentTime = Date.now();
-  let lastShotTime, shotsFired;
+  let lastShotTime, shotsFired, maxShotsAllowed;
 
   if (characterType === "character1") {
     lastShotTime = lastShotTimeCharacter1;
     shotsFired = shotsFiredCharacter1;
+    maxShotsAllowed = maxShots;
   } else if (characterType === "bot") {
     lastShotTime = lastShotTimeBot;
     shotsFired = shotsFiredBot;
+    maxShotsAllowed = botMaxShots;
   }
 
   if (gameOverScreen.classList.contains("hidden")) {
@@ -329,7 +412,7 @@ function shootFireball(characterPos, targetPos, characterType) {
       }
     }
 
-    if (shotsFired < maxShots) {
+    if (shotsFired < maxShotsAllowed) { 
       const targetDirection =
         targetPos.left > characterPos.left ? "right" : "left";
 
@@ -674,14 +757,13 @@ function checkGameOver() {
     let winnerText;
     if (character1Pos.health > 0) {
       winnerText = `${playerName} WINS`;
-      incrementWin(playerName);
+      currentLevel++;
     } else {
       winnerText = "Bot WINS";
+      currentLevel = 1;
     }
 
     document.getElementById("game-over-text").textContent = winnerText;
-
-    updateHighscore();
   }
 }
 
@@ -690,14 +772,15 @@ function updateLifeBars() {
   const barWidth = 120;
 
   const life1Width = (character1Pos.health / maxHealth) * barWidth;
-  const life2Width = (botPos.health / maxHealth) * barWidth;
+  const life2Width = (botPos.health / botMaxHealth) * barWidth;
 
   document.getElementById("life1").style.width = life1Width + "px";
   document.getElementById("life2").style.width = life2Width + "px";
 
   document.getElementById("life-text1").textContent =
-    character1Pos.health + "/5 HP";
-  document.getElementById("life-text2").textContent = botPos.health + "/5 HP";
+    character1Pos.health + "/ 5 HP";
+  document.getElementById("life-text2").textContent = botPos.health + "/ "  + botMaxHealth + " HP";
+
 }
 
 function update() {
@@ -913,7 +996,9 @@ function showHighscore() {
 function saveHighscores() {
   localStorage.setItem("highscores", JSON.stringify(playerNamefield));
 }
+
 function updateHighscore() {
+
   highscoreList.innerHTML = "";
 
   playerNamefield.sort((a, b) => b.wins - a.wins);
@@ -947,7 +1032,7 @@ startButtonName.addEventListener("click", function () {
 });
 
 startButton.addEventListener("click", function () {
-  restartGame();
+  startGame();
 });
 
 highscoreButton.addEventListener("click", showHighscore);
@@ -974,7 +1059,7 @@ mainMenuButtonrestart.addEventListener("click", function () {
   showStartMenu();
 });
 
-restartButton.addEventListener("click", restartGame);
+restartButton.addEventListener("click", startGame);
 
 document.addEventListener("keydown", handleKeyDown);
 document.addEventListener("keyup", handleKeyUp);
